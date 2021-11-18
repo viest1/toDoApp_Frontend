@@ -1,0 +1,6 @@
+.custom-classname.react-toggle--checked .react-toggle-track {
+  background-color: #000000;
+}
+.custom-classname.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #000000;
+}
