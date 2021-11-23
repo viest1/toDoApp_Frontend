@@ -5,6 +5,7 @@ export const Container = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-right: 3px solid ${({ theme }) => theme.colors.lightGrey};
+  position: relative;
 `;
 
 export const TitleApp = styled.h4`

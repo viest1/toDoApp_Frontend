@@ -4,7 +4,6 @@ import { BsCalendarDate } from 'react-icons/bs';
 import { MdDelete } from 'react-icons/md';
 import { BiEdit } from 'react-icons/bi';
 import Modal from '../../organisms/Modal/Modal';
-import { Container, InputTitle, LabelStyled, TextareaStyled } from '../NoteInput/NoteInput.styles';
 import {
   ContainerNote,
   ContainerIconHeader,
@@ -16,8 +15,7 @@ import {
   ColorizedRibbon,
   NoteDescription,
 } from './Note.styles';
-import { sortByTimestamp } from '../../../helpers/sortByTimestamp';
-import InputSubmit from '../../atoms/InputSubmit/InputSubmit';
+import BodyModalNoteEdit from '../../organisms/BodyModalNoteEdit/BodyModalNoteEdit';
 
 const pointer = { cursor: 'pointer' };
 
@@ -32,6 +30,7 @@ const Note = ({
   const [isOpen, setIsOpen] = useState(false);
   const [counter, setCounter] = useState(0);
   const [positionStatic, setPositionStatic] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleDelete = (id) => {
     if (notesReal) {
       setNotes(notesReal.filter((item) => item.id !== id));
@@ -51,18 +50,6 @@ const Note = ({
     setIsSubmitted(false);
   };
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (notesReal) {
-      setNotes(sortByTimestamp([editNote, ...notesReal.filter((item) => item.id !== id)]));
-      setSearchNotes(sortByTimestamp([editNote, ...notes.filter((item) => item.id !== id)]));
-    } else {
-      setNotes(sortByTimestamp([editNote, ...notes.filter((item) => item.id !== id)]));
-    }
-
-    setIsSubmitted(true);
-  };
   const handleChangeColor = () => {
     if (counter < 3) {
       setCounter((previous) => previous + 1);
@@ -89,41 +76,24 @@ const Note = ({
         </IconsHeader>
       </ContainerIconHeader>
       {isOpen && (
-        <div>
-          <Modal handleClose={handleClose}>
-            {notes.length && (
-              <div>
-                <Container onSubmit={handleSubmit} style={{ padding: '0.2rem 1rem 0.5rem 1rem' }}>
-                  <LabelStyled htmlFor="titleNote">Edit Your Note</LabelStyled>
-                  <InputTitle
-                    type="text"
-                    id="titleNote"
-                    name="titleNote"
-                    placeholder="Title"
-                    value={editNote.title}
-                    onChange={(e) => {
-                      setEditNote({ ...editNote, title: e.target.value });
-                    }}
-                    required
-                  />
-                  <TextareaStyled
-                    name="textNote"
-                    id="textNote"
-                    cols="30"
-                    rows="10"
-                    placeholder="Note Text"
-                    value={editNote.description}
-                    onChange={(e) => {
-                      setEditNote({ ...editNote, description: e.target.value });
-                    }}
-                  />
-                  <InputSubmit value="Save Note" />
-                  {isSubmitted && <h3>Note Edited Correctly</h3>}
-                </Container>
-              </div>
-            )}
-          </Modal>
-        </div>
+        <Modal handleClose={handleClose}>
+          {notes.length && (
+            <BodyModalNoteEdit
+              editNoteTitle={editNote.title}
+              editNoteDescription={editNote.description}
+              editNote={editNote}
+              setEditNote={setEditNote}
+              isSubmitted={isSubmitted}
+              setIsSubmitted={setIsSubmitted}
+              notes={notes}
+              setNotes={setNotes}
+              setSearchNotes={setSearchNotes}
+              notesReal={notesReal}
+              title={title}
+              description={description}
+            />
+          )}
+        </Modal>
       )}
       <div>
         <StyledH3>{title}</StyledH3>

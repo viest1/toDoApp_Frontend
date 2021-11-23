@@ -1,5 +1,6 @@
 import React, { useState, createContext } from 'react';
 import faceIcon from 'assets/icons/icon-face.png';
+import { useAuth } from 'hooks/useAuth';
 
 export const ToDoAppContext = createContext({
   tasksToDo: [],
@@ -34,6 +35,14 @@ export const ToDoAppContext = createContext({
   addExampleData: () => {},
   isAddExampleData: false,
   setIsAddExampleData: () => {},
+  isLoggedIn: false,
+  userId: null,
+  token: null,
+  login: () => {},
+  logout: () => {},
+  logoutTime: null,
+  startTutorial: false,
+  setStartTutorial: () => {},
 });
 
 const GeneralProvider = ({ children }) => {
@@ -63,6 +72,8 @@ const GeneralProvider = ({ children }) => {
     exampleNotes: [],
   });
   const [isAddExampleData, setIsAddExampleData] = useState(false);
+  const { token, login, logout, userId, logoutTime } = useAuth();
+  const [startTutorial, setStartTutorial] = useState(false);
 
   return (
     <ToDoAppContext.Provider
@@ -99,6 +110,14 @@ const GeneralProvider = ({ children }) => {
         addExampleData,
         isAddExampleData,
         setIsAddExampleData,
+        token,
+        login,
+        logout,
+        userId,
+        isLoggedIn: !!token,
+        logoutTime,
+        startTutorial,
+        setStartTutorial,
       }}
     >
       {children}

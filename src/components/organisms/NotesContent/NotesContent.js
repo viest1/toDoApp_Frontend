@@ -14,7 +14,6 @@ const NotesContent = () => {
   const [isSearching, setIsSearching] = useState(false);
 
   const handleOpen = () => {
-    console.log('clicked');
     setIsOpen(true);
   };
 

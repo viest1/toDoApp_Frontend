@@ -1,13 +1,7 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
 import FormLabelAndInput from '../../atoms/FormLabelAndInput/FormLabelAndInput';
 import { ToDoAppContext } from '../../../providers/GeneralProvider';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
+import { Container } from './ResetTasks.styles';
 
 const ResetTasks = () => {
   const { checkboxes, setCheckboxes } = useContext(ToDoAppContext);

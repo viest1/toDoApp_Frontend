@@ -1,25 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const InputSearch = styled.input`
-  border: none;
-  outline: none;
-  background-color: ${({ theme }) =>
-    theme.colors.lighterBackground ? theme.colors.lighterBackground : theme.colors.green100};
-  border-radius: 0.7rem;
-  padding: 0.7rem;
-`;
-
-const Container = styled.div`
-  ${({ is2Columns }) =>
-    is2Columns &&
-    `display:flex;
-gap:1rem;
-align-items:center;
-width:200px;
-justify-content:space-between;
-`}
-`;
+import { InputSearch, Container } from './FormLabelAndInput.styles';
 
 const FormLabelAndInput = ({
   id,
@@ -29,6 +9,7 @@ const FormLabelAndInput = ({
   required = true,
   handleInput,
   is2Columns,
+  value,
 }) => {
   return (
     <Container is2Columns={is2Columns}>
@@ -39,6 +20,7 @@ const FormLabelAndInput = ({
         name={id}
         placeholder={placeholder}
         required={required}
+        value={value}
         onChange={handleInput}
       />
     </Container>

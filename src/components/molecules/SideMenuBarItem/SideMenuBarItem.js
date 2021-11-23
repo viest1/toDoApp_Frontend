@@ -1,11 +1,11 @@
 import React from 'react';
-import { ContainerIconTitle, StyledLink } from './SideMenuBarItem.styles';
+import { ContainerIconTitle, StyledLink, Button } from './SideMenuBarItem.styles';
 
-const SideMenuBarItem = ({ icon, title, pathRoute }) => (
+const SideMenuBarItem = ({ onClick, isButton, icon, title, pathRoute }) => (
   <div>
     <ContainerIconTitle>
       <img src={icon} alt={title + ' icon'} />
-      <StyledLink to={pathRoute}>{title}</StyledLink>
+      {!isButton ? <StyledLink to={pathRoute}>{title}</StyledLink> : <Button onClick={onClick}>{title}</Button>}
     </ContainerIconTitle>
   </div>
 );

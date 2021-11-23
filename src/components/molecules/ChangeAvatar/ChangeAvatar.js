@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import styled from 'styled-components';
 import faceCatIcon from 'assets/icons/icon-cat-face.png';
 import faceHotIcon from 'assets/icons/icon-hot-face.png';
 import faceDogIcon from 'assets/icons/icon-dog-face.png';
@@ -9,28 +8,7 @@ import faceIcon from 'assets/icons/icon-face.png';
 import { ToDoAppContext } from '../../../providers/GeneralProvider';
 import Modal from '../../organisms/Modal/Modal';
 import { BackgroundRounded } from '../../organisms/Header/Header.styles';
-
-const ContainerAvatars = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1.3rem;
-
-  img {
-    width: 35px;
-    height: 35px;
-  }
-  img:hover {
-    cursor: pointer;
-  }
-`;
-
-const ContainerAvatar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
+import { ContainerAvatar, ContainerAvatars } from './ChangeAvatar.styles';
 
 const ChangeAvatar = () => {
   const { setAvatarSrc, avatarSrc } = useContext(ToDoAppContext);
@@ -52,7 +30,7 @@ const ChangeAvatar = () => {
 
   useEffect(() => {
     localStorage.getItem('avatar') !== null && setAvatarSrc(localStorage.getItem('avatar'));
-  }, []);
+  }, [setAvatarSrc]);
 
   return (
     <div>

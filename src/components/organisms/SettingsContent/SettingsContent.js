@@ -1,18 +1,11 @@
 import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
 import ChangeName from '../../molecules/ChangeName/ChangeName';
 import { ToDoAppContext } from '../../../providers/GeneralProvider';
 import ChangeAvatar from '../../molecules/ChangeAvatar/ChangeAvatar';
 import InputSubmit from '../../atoms/InputSubmit/InputSubmit';
 import ResetTasks from '../../molecules/ResetTasks/ResetTasks';
 import AddExampleData from '../../molecules/AddExampleData/AddExampleData';
-
-const ContainerForm = styled.form`
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
+import { ContainerForm } from './SettingsContent.styles';
 
 const SettingsContent = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -28,14 +21,30 @@ const SettingsContent = () => {
     exampleData,
     isAddExampleData,
     setIsAddExampleData,
+    userId,
   } = useContext(ToDoAppContext);
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle Name
     const inputName = e.target.name.value;
-    if (inputName) {
-      setName(inputName);
-      localStorage.setItem('name', inputName);
+    const setNameDb = async () => {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/setname', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, name: inputName }),
+      });
+      const jsonResponse = await response.json();
+      await setName(jsonResponse.name);
+    };
+
+    if (inputName && userId) {
+      try {
+        setNameDb();
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     // Handle Avatar

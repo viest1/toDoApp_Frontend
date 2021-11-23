@@ -1,10 +1,20 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useEventListener } from '../../../hooks/useEventListener';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
-import { Container, ContainerGap, ContainerResults } from './MiniGameMouse.styles';
+import {
+  Container,
+  ContainerGap,
+  ContainerResults,
+  StyledH2,
+  StyledH3,
+  StyledH4,
+  StyledH1,
+} from './MiniGameMouse.styles';
 import { randomNumber } from 'helpers/randomNumber';
 import { timer } from '../../../helpers/timer';
 import ButtonAtoms from '../../atoms/ButtonAtoms/ButtonAtoms';
+import { ToDoAppContext } from '../../../providers/GeneralProvider';
+import CardResult from '../../molecules/CardResult/CardResult';
 
 const MiniGameMouse = () => {
   const { height, width } = useWindowDimensions();
@@ -18,6 +28,7 @@ const MiniGameMouse = () => {
   const [results, setResults] = useState([]);
   const [result, setResult] = useState(0);
   const lengthArrayPoints = arrayPoints.length;
+  const { name, userId, setName, avatarSrc } = useContext(ToDoAppContext);
   const handler = useCallback(
     ({ clientX, clientY }) => {
       setCoords({ x: clientX, y: clientY });
@@ -49,6 +60,16 @@ const MiniGameMouse = () => {
     setArrayPoints([]);
   };
 
+  const fetchResults = async () => {
+    try {
+      const responseData = await fetch(process.env.REACT_APP_BACKEND_URL + `/results`);
+      const responseDataJson = await responseData.json();
+      await setResults(
+        responseDataJson.map((item) => ({ time: item.time, name: item.name, avatarSrc: item.avatarSrc }))
+      );
+    } catch (err) {}
+  };
+
   useEffect(() => {
     targetPoints();
   }, [targetPoints]);
@@ -65,34 +86,71 @@ const MiniGameMouse = () => {
       const dateEnd = Date.now();
       const finishTime = ((dateEnd - timeStart) / 1000).toFixed(2);
       setResult(finishTime);
-      setResults([...results, finishTime]);
+      // setResults([...results, finishTime]);
       return;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lengthArrayPoints]);
 
   useEffect(() => {
-    const storageResults = JSON.parse(localStorage.getItem('resultsMiniGame'));
-    storageResults !== null && setResults(storageResults);
-  }, [setResults]);
+    fetchResults();
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('resultsMiniGame', JSON.stringify(results));
-  }, [results]);
+    const getName = async () => {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/name', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+      const jsonResponse = await response.json();
+      setName(jsonResponse.name);
+    };
+
+    if (userId) {
+      getName();
+    }
+  }, [userId, setName]);
+
+  useEffect(() => {
+    const saveResultsToDb = async () => {
+      await fetch(process.env.REACT_APP_BACKEND_URL + '/results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          name,
+          time: result,
+          avatarSrc,
+        }),
+      });
+    };
+    if (result > 0) {
+      saveResultsToDb().then(() => {
+        fetchResults();
+      });
+    }
+  }, [result, name, avatarSrc, userId]);
 
   return (
     <Container>
-      <h1>{coords.x && coords.y ? `The mouse position is (${coords.x},${coords.y})` : 'Move Mouse'}</h1>
+      <StyledH1>
+        {coords.x && coords.y ? `The mouse position is (${coords.x},${coords.y})` : 'Move Mouse'}
+      </StyledH1>
       {!lengthArrayPoints && (
         <ContainerGap>
-          <h2>Do you want to play the game?</h2>
-          <h2>Warm up...</h2>
-          <h2>
+          <StyledH3>Do you want to play the game?</StyledH3>
+          <StyledH2>
             Move Mouse to ({target[0]}, {target[1]}) to START GAME
-          </h2>
-          <h3>
+          </StyledH2>
+          <StyledH4>
             Tip: You can go wrong by 1px. Example: ({target[0] + 1}, {target[1] + 1}) or ({target[0] - 1},{' '}
             {target[1] - 1})
-          </h3>
+          </StyledH4>
         </ContainerGap>
       )}
       {lengthArrayPoints < goalPoints && isReachedPoint() && targetPoints()}
@@ -117,16 +175,12 @@ const MiniGameMouse = () => {
         )
       )}
       <div>
-        <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Results:</h2>
+        <StyledH2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Results:</StyledH2>
         <ContainerResults>
           {results &&
             results
-              .sort((a, b) => a - b)
-              .map((item, index) => (
-                <p key={index}>
-                  {index + 1}. {item}s
-                </p>
-              ))}
+              .sort((a, b) => a.time - b.time)
+              .map((item, index) => <CardResult key={index} item={item} index={index} />)}
         </ContainerResults>
       </div>
     </Container>

@@ -15,7 +15,6 @@ const DarkMode = ({ setThemeState }) => {
   const [darkMode, setDarkMode] = useDarkMode(setThemeState, 'dark-mode-enabled');
   return (
     <Container>
-      <label></label>
       <Toggle
         onChange={(e) => setDarkMode(e.target.checked)}
         defaultChecked={darkMode}

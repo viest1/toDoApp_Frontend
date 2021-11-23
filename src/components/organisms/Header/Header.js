@@ -20,7 +20,6 @@ const Header = () => {
   const {
     name,
     setName,
-    setAvatarSrc,
     avatarSrcHeader,
     setAvatarSrcHeader,
     tasksToDo,
@@ -30,6 +29,7 @@ const Header = () => {
     setSearchTasksInProgress,
     tasksInProgress,
     tasksCompleted,
+    userId,
   } = useContext(ToDoAppContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -79,9 +79,25 @@ const Header = () => {
   useEffect(() => {
     const avatarStorage = localStorage.getItem('avatar');
     avatarStorage !== null && setAvatarSrcHeader(avatarStorage);
-    const nameStorage = localStorage.getItem('name');
-    nameStorage !== null && setName(nameStorage);
-  }, []);
+  }, [setAvatarSrcHeader]);
+
+  useEffect(() => {
+    const getName = async () => {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/name', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+      const jsonResponse = await response.json();
+      setName(jsonResponse.name);
+    };
+
+    if (userId) {
+      getName();
+    }
+  }, [userId, setName]);
 
   return (
     <Container>

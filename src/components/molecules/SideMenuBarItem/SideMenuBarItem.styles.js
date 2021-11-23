@@ -35,3 +35,13 @@ export const StyledLink = styled(NavLink).attrs({ activeclassname: 'active-link'
     background-color: ${({ theme }) => theme.colors.grey};
   }
 `;
+
+export const Button = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  &:hover {
+    cursor: pointer;
+    color: ${({ theme }) => theme.colors.green300};
+  }
+`;

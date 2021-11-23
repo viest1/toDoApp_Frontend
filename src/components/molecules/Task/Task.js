@@ -6,9 +6,7 @@ import { MdDelete } from 'react-icons/md';
 import { BiEdit } from 'react-icons/bi';
 import { ContainerTask, ContainerIconP, ContainerIcons, TaskTitle, TaskDescription } from './Task.styles';
 import Modal from '../../organisms/Modal/Modal';
-import { Container, InputTitle, LabelStyled, TextareaStyled } from '../NoteInput/NoteInput.styles';
-import { sortByTimestamp } from '../../../helpers/sortByTimestamp';
-import InputSubmit from '../../atoms/InputSubmit/InputSubmit';
+import BodyModalTaskEdit from '../../organisms/BodyModalTaskEdit/BodyModalTaskEdit';
 
 const Task = ({
   title,
@@ -27,7 +25,8 @@ const Task = ({
 }) => {
   const [editTask, setEditTask] = useState({ id: '', title: '', description: '', timestamp: 0, progress: '' });
   const [isOpen, setIsOpen] = useState(false);
-
+  const pointer = { cursor: 'pointer' };
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleEdit = () => {
     setIsOpen(true);
     setEditTask({ id, title, description, progress, timestamp });
@@ -36,18 +35,6 @@ const Task = ({
     setIsOpen(false);
     setIsSubmitted(false);
   };
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (realTasks) {
-      setRealTasks(sortByTimestamp([editTask, ...realTasks.filter((item) => item.id !== id)]));
-    }
-    setTasks(sortByTimestamp([editTask, ...tasks.filter((item) => item.id !== id)]));
-    setIsSubmitted(true);
-  };
-
-  const pointer = { cursor: 'pointer' };
 
   return (
     <ContainerTask>
@@ -75,41 +62,21 @@ const Task = ({
         </ContainerIcons>
       )}
       {isOpen && (
-        <div>
-          <Modal handleClose={handleClose}>
-            {tasks.length && (
-              <div>
-                <Container onSubmit={handleSubmit} style={{ padding: '0.2rem 1rem 0.5rem 1rem' }}>
-                  <LabelStyled htmlFor="titleNote">Edit Your Task</LabelStyled>
-                  <InputTitle
-                    type="text"
-                    id="titleNote"
-                    name="titleNote"
-                    placeholder="Title"
-                    value={editTask.title}
-                    onChange={(e) => {
-                      setEditTask({ ...editTask, title: e.target.value });
-                    }}
-                    required
-                  />
-                  <TextareaStyled
-                    name="textNote"
-                    id="textNote"
-                    cols="30"
-                    rows="10"
-                    placeholder="Note Text"
-                    value={editTask.description}
-                    onChange={(e) => {
-                      setEditTask({ ...editTask, description: e.target.value });
-                    }}
-                  />
-                  <InputSubmit value="Save Task" />
-                  {isSubmitted && <h3>Note Edited Correctly</h3>}
-                </Container>
-              </div>
-            )}
-          </Modal>
-        </div>
+        <Modal handleClose={handleClose}>
+          {tasks.length && (
+            <BodyModalTaskEdit
+              title={title}
+              description={description}
+              editTask={editTask}
+              isSubmitted={isSubmitted}
+              setIsSubmitted={setIsSubmitted}
+              setTasks={setTasks}
+              realTasks={realTasks}
+              setRealTasks={setRealTasks}
+              tasks={tasks}
+            />
+          )}
+        </Modal>
       )}
     </ContainerTask>
   );
