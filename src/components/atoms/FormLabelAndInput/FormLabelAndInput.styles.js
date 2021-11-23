@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const InputSearch = styled.input`
   border: none;
-  outline: none;
+  outline: ${({ isNotValid }) => (isNotValid ? '1px dashed red !important' : 'none')};
   background-color: ${({ theme }) =>
     theme.colors.lighterBackground ? theme.colors.lighterBackground : theme.colors.green100};
   border-radius: 0.7rem;

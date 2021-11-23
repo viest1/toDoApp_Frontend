@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FormContainer } from './FormAuth.styles';
 import ButtonAtoms from '../../atoms/ButtonAtoms/ButtonAtoms';
 import { ToDoAppContext } from '../../../providers/GeneralProvider';
@@ -11,6 +11,11 @@ const FormAuth = () => {
   const [name, setName] = useState('');
   const [errorMessage, setErrorMessage] = useState();
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [invalidPassword, setInvalidPassword] = useState();
+  const [notValidPassword, setNotValidPassword] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState();
+  const [notValidEmail, setNotValidEmail] = useState(false);
+  const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const { login } = useContext(ToDoAppContext);
 
   const handleLoginModeOn = (e) => {
@@ -65,6 +70,30 @@ const FormAuth = () => {
     }
   };
 
+  const handleOnBlur = () => {
+    if (password.length < 6 && password.length > 0) {
+      setNotValidPassword(true);
+      return setInvalidPassword('Password Too Short. Minimum 6 signs! :)');
+    } else {
+      setNotValidPassword(false);
+      setInvalidPassword();
+    }
+    if (!email.match(mailFormat)) {
+      setNotValidEmail(true);
+      return setInvalidEmail('E-mail Incorrect! Try Again! :)');
+    } else {
+      setNotValidEmail(false);
+      setInvalidEmail();
+    }
+  };
+
+  useEffect(() => {
+    if (password.length > 5) {
+      setNotValidPassword(false);
+      setInvalidPassword();
+    }
+  }, [password]);
+
   return (
     <FormContainer onSubmit={handleSubmit}>
       {!isLoginMode && (
@@ -80,14 +109,20 @@ const FormAuth = () => {
         placeholder="Enter Email"
         value={email}
         handleInput={(e) => setEmail(e.target.value)}
+        isNotValid={notValidEmail}
+        onBlur={handleOnBlur}
       />
+      {invalidEmail && <p>{invalidEmail}</p>}
       <FormLabelAndInput
         type="password"
         id="pass"
         placeholder="Enter Password"
         value={password}
+        isNotValid={notValidPassword}
+        onBlur={handleOnBlur}
         handleInput={(e) => setPassword(e.target.value)}
       />
+      {invalidPassword && <p>{invalidPassword}</p>}
       {isLoginMode && <InputSubmit value="Log In" setWidth="auto" />}
       {errorMessage && isLoginMode && <p>{errorMessage}</p>}
       {isLoginMode && <ButtonAtoms text="Switch To Sign Up" onClick={handleLoginModeOff} />}

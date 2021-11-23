@@ -17,7 +17,7 @@ const CardResult = ({ item: { time, name, avatarSrc }, index }) => {
       </ContainerPlace>
       <ContainerPlace>
         {index < 3 && <IconTrophy index={index} />}
-        <StyledP>{time}s</StyledP>
+        <StyledP>{time.toFixed(2)}s</StyledP>
       </ContainerPlace>
     </Container>
   );

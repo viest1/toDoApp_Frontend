@@ -21,7 +21,7 @@ const MessageCard = ({ item: { name, text, date, dateTime }, item }) => {
       <ContainerNameDate>
         {yourMessage ? (
           <React.Fragment>
-            <h4 style={{ color: 'black' }}>{name}</h4>
+            <h4 style={{ color: 'black' }}>{name} (Me)</h4>
             <span style={{ fontSize: '10px', color: 'black' }}>
               {dateTime} {date}
             </span>

@@ -44,6 +44,7 @@ const Chat = () => {
         getMessages();
       });
     }
+    setText('');
   };
 
   const getMessages = async () => {

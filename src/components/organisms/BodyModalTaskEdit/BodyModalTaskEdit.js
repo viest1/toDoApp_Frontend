@@ -29,14 +29,9 @@ const BodyModalTaskEdit = ({
   };
 
   useEffect(() => {
-    setEditTaskUpdated({ ...editTaskUpdated, title: editTaskTitle });
+    setEditTaskUpdated({ ...editTaskUpdated, title: editTaskTitle, description: editTaskDescription });
     // eslint-disable-next-line
-  }, [editTaskTitle]);
-
-  useEffect(() => {
-    setEditTaskUpdated({ ...editTaskUpdated, description: editTaskDescription });
-    // eslint-disable-next-line
-  }, [editTaskDescription]);
+  }, [editTaskTitle, editTaskDescription]);
 
   return (
     <Container onSubmit={handleSubmit} style={{ padding: '0.2rem 1rem 0.5rem 1rem' }}>

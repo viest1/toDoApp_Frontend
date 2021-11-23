@@ -10,6 +10,8 @@ const FormLabelAndInput = ({
   handleInput,
   is2Columns,
   value,
+  isNotValid,
+  onBlur,
 }) => {
   return (
     <Container is2Columns={is2Columns}>
@@ -22,6 +24,8 @@ const FormLabelAndInput = ({
         required={required}
         value={value}
         onChange={handleInput}
+        isNotValid={isNotValid}
+        onBlur={onBlur}
       />
     </Container>
   );
